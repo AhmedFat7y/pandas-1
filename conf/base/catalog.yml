@@ -117,11 +117,30 @@
 #  type: kedro.contrib.io.pyspark.SparkDataSet  # https://kedro.readthedocs.io/en/latest/kedro.contrib.io.pyspark.SparkDataSet.html
 #  filepath: data/02_intermediate/cars.parquet
 
-
-
 # This is a data set used by the example pipeline provided with the projected
 # template. Please feel free to remove it once you remove the example pipeline.
 example_iris_data:
   type: CSVLocalDataSet
   filepath: data/01_raw/iris.csv
 
+files_df:
+  type: CSVLocalDataSet
+  filepath: data/01_raw/files_df.csv
+cleaned_df:
+  type: ParquetLocalDataSet
+  filepath: data/02_intermediate/cleaned_df.parquet
+base_edges_df:
+  type: ParquetLocalDataSet
+  filepath: data/02_intermediate/base_edges_df.parquet
+casted_base_edges_df:
+  type: ParquetLocalDataSet
+  filepath: data/02_intermediate/casted_base_edges_df.parquet
+all_edges_df:
+  type: ParquetLocalDataSet
+  filepath: data/02_intermediate/all_edges_df.parquet
+cycles_df:
+  type: ParquetLocalDataSet
+  filepath: data/02_intermediate/cycles_df.parquet
+arbitrage_df:
+  type: ParquetLocalDataSet
+  filepath: data/02_intermediate/arbitrage_df.parquet

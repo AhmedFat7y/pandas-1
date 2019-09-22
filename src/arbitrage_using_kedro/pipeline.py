@@ -29,7 +29,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes.example import predict, report_accuracy, split_data, train_model
+import arbitrage_using_kedro.nodes.arbitrage as nodes
 
 # Here you can define your data-driven pipeline by importing your functions
 # and adding them to the pipeline as follows:
@@ -37,8 +37,8 @@ from .nodes.example import predict, report_accuracy, split_data, train_model
 # from nodes.data_wrangling import clean_data, compute_features
 #
 # pipeline = Pipeline([
-#     node(clean_data, 'customers', 'prepared_customers'),
-#     node(compute_features, 'prepared_customers', ['X_train', 'Y_train'])
+#     node (clean_data, 'customers', 'prepared_customers'),
+#     node (compute_features, 'prepared_customers', ['X_train', 'Y_train'])
 # ])
 #
 # Once you have your pipeline defined, you can run it from the root of your
@@ -59,7 +59,6 @@ def create_pipeline(**kwargs):
 
     """
 
-
     ###########################################################################
     # Here you can find an example pipeline with 4 nodes.
     #
@@ -70,26 +69,40 @@ def create_pipeline(**kwargs):
     pipeline = Pipeline(
         [
             node(
-                split_data,
-                ["example_iris_data", "params:example_test_data_ratio"],
-                dict(
-                    train_x="example_train_x",
-                    train_y="example_train_y",
-                    test_x="example_test_x",
-                    test_y="example_test_y",
-                ),
+                nodes.save_data_files_paths_to_csv,
+                ["params:raw_folder"],
+                "files_df",
             ),
             node(
-                train_model,
-                ["example_train_x", "example_train_y", "parameters"],
-                "example_model",
+                nodes.combine_raw_multiple_json_to_single_df,
+                ["files_df", "params:needed_obj_keys"],
+                "cleaned_df",
             ),
             node(
-                predict,
-                dict(model="example_model", test_x="example_test_x"),
-                "example_predictions",
+                nodes.generate_from_to_columns,
+                ["cleaned_df", "params:supported_currencies_list"],
+                "base_edges_df",
             ),
-            node(report_accuracy, ["example_predictions", "example_test_y"], None),
+            node(
+                nodes.cast_columns,
+                "base_edges_df",
+                "casted_base_edges_df",
+            ),
+            node(
+                nodes.generate_edges,
+                ["casted_base_edges_df"],
+                "all_edges_df",
+            ),
+            node(
+                nodes.generate_cycles_df,
+                ["all_edges_df"],
+                "cycles_df"
+            ),
+            node(
+                nodes.generate_arbitrage_df,
+                ["cycles_df"],
+                "arbitrage_df",
+            ),
         ]
     )
     ###########################################################################

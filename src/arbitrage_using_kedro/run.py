@@ -34,8 +34,10 @@ from typing import Iterable, Type
 from kedro.context import KedroContext
 from kedro.runner import AbstractRunner
 from kedro.pipeline import Pipeline
+from kedro.io import DataCatalog
 
 from arbitrage_using_kedro.pipeline import create_pipeline
+from arbitrage_using_kedro.runner import CustomRunner
 
 
 class ProjectContext(KedroContext):
@@ -50,6 +52,11 @@ class ProjectContext(KedroContext):
     @property
     def pipeline(self) -> Pipeline:
         return create_pipeline()
+
+    # @property
+    # def catalog(self) -> DataCatalog:
+    #     return create_catalog()
+
 
 def main(
     tags: Iterable[str] = None,
@@ -78,6 +85,7 @@ def main(
             end point of the new ``Pipeline``.
 
     """
+    runner = CustomRunner()
     context = ProjectContext(Path.cwd(), env)
     context.run(tags, runner, node_names, from_nodes, to_nodes)
 
