@@ -42,7 +42,7 @@ jupyter==1.0.0
 jupyter-client==5.3.1
 jupyter-console==6.0.0
 jupyter-core==4.5.0
-jupyterlab==0.31.1
+jupyterlab==1.2.21
 jupyterlab-launcher==0.10.5
 kedro==0.15.0
 kiwisolver==1.1.0
